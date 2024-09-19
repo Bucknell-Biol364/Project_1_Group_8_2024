@@ -2,17 +2,12 @@
 
 ## Authors
 
-<<<<<<< HEAD
 Gwen Murphy
-=======
-Ken Field
 Kristie Semanchik
-
->>>>>>> 92c5bb40a54e19c859f8c9727c308227dc1798b9
 
 ## Target Audience
 
-
+Students in BIOL 203/204 with a base level understanding of RStudio.
 
 ## Instructions
 
