@@ -7,7 +7,7 @@ Kristie Semanchik
 
 ## Target Audience
 
-Students in BIOL 203/204 with a base level understanding of RStudio.
+This tutorial is designed for students enrolled in BIOL 203/204 who possess a basic understanding of RStudio. It is intended for students who have already installed RStudio and are familiar with the interface, as well as basic coding practices, including writing, annotating, and running code. 
 
 ## Instructions
 
