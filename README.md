@@ -2,6 +2,8 @@
 
 ## Authors
 
+<<<<<<< HEAD
+
 Gwen Murphy
 Kristie Semanchik
 
@@ -10,24 +12,17 @@ Kristie Semanchik
 Gwen Murphy
 Kristie Semanchik
 
+>>>>>>> 6cf03a1468daffa5c7dddea941f422ed80cb62f5
 ## Target Audience
 
-This tutorial is designed for students enrolled in BIOL 203/204 who possess a basic understanding of RStudio. It is intended for students who have already installed RStudio and are familiar with the interface, as well as basic coding practices, including writing, annotating, and running code. 
+Students in BIOL 203/204 with a base level understanding of RStudio.
 
 ## Instructions
-
-1. By the end of this tutorial, students will be able to understand and confidently apply basic data analysis techniques in RStudio, including statistical tests ranging from summary statistics to ANOVAs, to interpret and analyze data sets.
-
-1.1 Basic Descriptive Statistics: 
-Students will be able to calculate basic descriptive statistics including summary statistics, such as sample size, range, mean, median, and standard deviation. 
-
-1.2: Statistical Testing:
-Students will be able perform statistical tests including t-tests and ANOVAs, as well as understand the outputs.  
 
 
 
 ## Objectives
 
-
+Data Visualization--> constructing different graphs with clear interpretations of these graphs while also maintaining clarity in explaining what these graphs do, what is our objective in making these graphs/how does this bring us closer to our final goal
 
 You will need to edit this README.md document when your tutorial is complete to include instructions for using the tutorial.
