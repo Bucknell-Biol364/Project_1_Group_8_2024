@@ -2,133 +2,162 @@
 title: "Group Project 1"
 subtitle: "Biology 368/664 Bucknell University"
 output: pdf_document
-authors: Prof. Ken Field
+authors: Kristie Semanchik 
 date: 14 Sep 2024
 ---
-
+# Required Packages 
+To begin this tutorial, please load these required packages.  
 ```{r Load Libraries, include=FALSE}
-# Load other packages here.
-if (!require("datasauRus")) install.packages("datasauRus"); library(datasauRus)
+if (!require("datasets")) install.packages("datasets"); library(datasets)
 if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse)
+if (!require("dbplyr")) install.packages("dbplyr"); library(dbplyr)
+if (!require("ggplot2")) install.packages("ggplot2"); library(ggplot2)
 ```
 
-This project will require you to develop a tutorial to teach Bucknell students how to use R for graphing and data analysis. 
+# Objectives
 
-## Introduction
+1. By the end of this tutorial, students will be able to understand and confidently apply basic data analysis techniques in RStudio, including statistical tests ranging from summary statistics to ANOVAs, to interpret and analyze data sets.
 
-Begin by introducing yourself to your group. 
-Then discuss the biggest challenge that you have faced during the first three weeks of this course.
-Determine if there are any common threads in these challenges and start to think about objectives for the tutorial.
+1.1 Descriptive Statistics: Students will be able to calculate basic descriptive statistics including summary statistics, such as sample size, min, max, mean, median, and standard deviation. 
 
-## Target Audience
+1.2: Statistical Testing: Students will be able perform statistical tests including two-sample t-test, one way ANOVA, and a two way ANOVA, as well as understand the outputs to make informed decisions about the data.  
 
-Discuss with your group the target audience for the tutorial. 
-Examples could be a new student in Biology 364/664, a student in one of the new core Biology classes (201, 202, 203, or 204), a student in another 300-level Biology course (not 364), or a new student in one of the Bucknell research groups. 
 
-Edit the README.md file in your group's repository to reflect your plan.
+# Section 1.1: Descriptive Statistics
+## Summary Statistics 
+Summary statistics are used to provide a quick summary of the data! They are particularly useful to understand, communicate, and compare the data. 
 
-## Objectives
+We are going to learn how to calculate each statistic individually, and then we will learn how to group the statistics together.  
 
-After deciding on the target audience for your tutorial determine 2 to 3 overall objectives for your tutorial (one per member of your group). 
-These should be high-level objectives that are important skills for your target audience.
-Check with Prof. Field to see if they are appropriate and then add them to your README.md file.
+### Example
+The statistics we are most interested in are min, max, mean, median, and standard deviation. 
 
-Identify at least 2 goals within each objective and add them to your README.md file.
-These should be goals that someone who is working through the tutorial can self-asses.
-For example, "to demostrate that you can test a hypothesis using a statistical model, the student should use a T test, linear model, or other test and interpret the p value appropriately."
-
-## Grading
-
-Each group will be expected to complete the following tasks to earn 85% of the points available for this assignment (21/25).
-
-- Identify and obtain suitable dataset
-- Use a Github repository and version control to collaborate on the project
-  + Every member of the group should participate in editing the repo
-- Spend 4-6 hours preparing, coding, and testing tutorial
-  + Data exploration
-  + Data visualization
-  + Hypothesis testing
-- Present tutorial in class
-- Provide public archive suitable for sharing to students/faculty
-
-Tutorials from previous classes can be viewed at our public github site: https://github.com/Bucknell-Biol364
-
-Each group should use an *Acknowledgements* section to document the participation of each member and the collaboration within and between groups.
-
-Additional credit will be awarded for providing assistance to other groups or for the development of a tutorial that goes beyond the minimal expectations listed above.
-You will have the opportunity to provide feedback to another group after the initial deadline (like for Homework 02).
-
-## Sample Dataset
-
-One of the possible datasets to use for the tutorial can be found in the datasauRus package.
-
+We will begin by calculating these statistics for overall uptake. 
 ```{r}
-datasaurus_dozen |> 
-  group_by(dataset) |> 
-  summarize(
-      mean_x    = mean(x),
-      mean_y    = mean(y),
-      std_dev_x = sd(x),
-      std_dev_y = sd(y),
-      corr_x_y  = cor(x, y)
-      )
+data("CO2")
+min(CO2$uptake,na.rm=TRUE)
+max(CO2$uptake,na.rm=TRUE)
+mean(CO2$uptake,na.rm=TRUE)
+median(CO2$uptake,na.rm=TRUE)
+sd(CO2$uptake,na.rm=TRUE)
+
 ```
+There is an easier way to group these statistics together that allows us to look at the statistics for type and treatment individually! This requires us using a function called group_by.
 
-Compare the means and standard deviations of the 13 different datasets.
-
-
-Boxplots of either the x or the y value show that there are some differences, even though the means and standard deviations are identical.
-
+We will now calculate the summary statistics grouped by type. 
 ```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = x, colour = dataset)) +
-    geom_boxplot() +
-    theme_void() +
-    theme(legend.position = "none") +
-    facet_wrap(~dataset, ncol = 3)
+summary_stats_type<- CO2 |>
+  group_by(Type) |>
+  summarise(count_uptake=n(),
+            min_uptake=min(uptake), 
+            max_uptake=max(uptake),
+            mean_uptake=mean(uptake),
+            median_uptake=median(uptake), 
+            sd_uptake=sd(uptake))
+print(summary_stats_type)
 ```
+The mean uptake for plants from Quebec is 33.54, whereas the mean uptake for plants from Mississippi is 20.88. These numbers seem different, but we cannot confirm significance until we run statistical tests (Section 1.2)! 
 
+### Practice 
+It is now your chance to calculate the summary statistics grouped by Treatment. 
 ```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = y, colour = dataset))+
-    geom_boxplot()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
+# perform summary statistics here! 
 ```
+What is the mean uptake for chilled? What about for nonchilled? Do you think there is a difference? 
 
-But you have to visualize all of the data with a scatter plot to really see the patterns.
+# Section 1.2: Statistical Testing
 
-```{r fig.height=12, fig.width=9}
-datasaurus_dozen |> 
-  ggplot(aes(x = x, y = y, colour = dataset))+
-    geom_point()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
-```
+## Statistical Test: t-test
+A t-test is used to test if the means of two independent variables are significantly different. 
 
-And did you notice the code in the {r} codechunk header that controlled the size of the output in the Rmd? Pretty neat trick!
+### Example
+We will begin by performing a two-sample t-test to compare CO2 uptake between the two types of plants (Quebec and Mississippi). 
 
-And here are two versions of the data that you could use in your data visualization tutorial. 
-To use them you would probably want to change the names of the datasets and also make x and y more meaningful. 
-Then save them as a csv or tsv to be imported later for your tutorial. 
-
+The formula used is t.test(dependent variable ~ independent variable, data= data frame)
+Dependent Variable: uptake
+Independent Variable: type
 ```{r}
-datasaurus_long <- datasaurus_dozen
-datasaurus_wide <- datasaurus_dozen_wide
-head(datasaurus_long)
-head(datasaurus_wide)
+t.test(uptake~Type, data=CO2)
 ```
+The output shows us the p-value, which will tell us whether the difference in means is statistically significant. If the p-value is less than 0.05, we conclude that there is a statistically significant difference in CO2 uptake between Quebec and Mississippi.
 
-# Acknowledgements
+The p-value is 4.451e-09. We can conclude that there is a statistically significant difference in CO2 uptake between plants from Quebec and Mississippi. 
 
-DatasauRus package and description below: Stephanie Locke https://github.com/jumpingrivers/datasauRus
+### Practice
+It is now your chance to practice performing a two-sample t-test to compare CO2 uptake between the two treatment types (chilled and nonchilled). 
 
-The datasauRus package wraps the awesome Datasaurus Dozen dataset, which contains 13 sets of x-y data. Each sub-dataset has five statistics that are (almost) the same in each case. (These are the mean of x, mean of y, standard deviation of x, standard deviation of y, and Pearson correlation between x and y). However, scatter plots reveal that each sub-dataset looks very different. The dataset is intended to be used to teach students that it is important to plot their own datasets, rather than relying only on statistics.
+What are the dependent and independent variables?
+Dependent Variable: 
+Independent Variable: 
+```{r}
+# perform a two-sample t-test here 
+```
+What was the p-value?
 
-The Datasaurus was created by Alberto Cairo and described in the paper [Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing](https://www.autodeskresearch.com/publications/samestats) by Justin Matejka and George Fitzmaurice.
+What does this tell us about the relationship between CO2 uptake and treatment? 
 
-In the paper, Justin and George simulate a variety of datasets that the same summary statistics to the Datasaurus but have very different distributions. 
+## Statistical Test: one way ANOVA
+A one-way analysis of variance (ANOVA) is used to determine if the means more than 2 independent treatment groups are significantly different. 
 
-This package also makes these datasets available for use as an advanced [Anscombe's Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet), available in R as `anscombe`.
+This data set only has 2 treatment groups per independent variable -- that's okay! The results of a one-way ANOVA will be equivalent to a two-sample t-test when analyzing 2 treatment groups.  
+
+### Example
+We will begin by performing a one-way ANOVA to compare CO2 uptake between the two types of plants (Quebec and Mississippi). 
+
+The formula used is name<-aov(dependent variable ~ independent variable, data= data frame)
+Dependent Variable: uptake
+Independent Variable: type
+```{r}
+type_anova<-aov(uptake~Type, data=CO2)
+summary(type_anova)
+```
+The output shows us the Pr(>F), or the p-value, which will tell us whether the difference in means is statistically significant. Again, if the p-value is less than 0.05, we conclude that there is a statistically significant difference in CO2 uptake between Quebec and Mississippi.
+
+The p-value is 3.83e-09. We can conclude that there is a statistically significant difference in CO2 uptake between plants from Quebec and Mississippi.
+
+### Practice 
+It is now your chance to practice performing a one way ANOVA to compare CO2 uptake between the two treatment types (chilled and nonchilled). 
+
+What are the dependent and independent variables?
+Dependent Variable: 
+Independent Variable: 
+```{r}
+# perform one-way ANOVA here!
+```
+What was the p-value?
+
+What does this tell us about the relationship between CO2 uptake and treatment? 
+
+## Statistical Test: two way ANOVA
+A two-way analysis of variance (ANOVA) is used to determine how two independent variables, in combination, affect a dependent variable. 
+
+While this is a more advanced statistical test, there is no example, just practice! But don't worry, we will walk you through the code! 
+
+### Practice 
+The formula used is:
+name<-aov(dependent variable ~ independent variable1 * independent variable2, data= data frame)
+
+Based on what we have been doing, what are our dependent and independent variables?
+Dependent: 
+Independent 1:
+Independent 2:
+*note that independent variables 1 and 2 can be interchangeable! 
+```{r}
+try<-aov(uptake ~ Treatment * Type, data= CO2)
+summary(try)
+```
+What was the p-value for treatment? 
+
+What was the p-value for type? 
+
+What was the p-value for the interaction between treatment and type? 
+
+What is a two-way ANOVA used for? What do these results tell us about our two independent variables? 
+
+
+
+
+
+
+
+
