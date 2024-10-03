@@ -12,6 +12,7 @@ This tutorial is designed for students enrolled in BIOL 203/204 who possess a ba
 ## Instructions
 1. This tutorial will be located in the Project_1_Group_8_2024 github repository 
 2. Open the FINAL_Project01.Rmd document to load the tutorial
+3.When you open the document, look in the upper right corner of your code screen to find a figure with horizontal lines labeled "Outline". This will give you a clear, mapped out view of our tutorial. 
 3. We will be using the CO2 R dataset studying the differences in CO2 uptake dependent on the variant of plants (from Quebec or Mississippi) and the treatment plan (chilled and non-chilled) When you open the FINAL_Project01.md file, you must load in the CO2 Dataset and required packages. 
 4. Begin with Section 1.1 regarding descriptive statistics, through Section 2.2 regarding graphical analysis. 
 ## Objectives
