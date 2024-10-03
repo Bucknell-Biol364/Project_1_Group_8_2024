@@ -154,6 +154,81 @@ What was the p-value for the interaction between treatment and type?
 
 What is a two-way ANOVA used for? What do these results tell us about our two independent variables? 
 
+#Data Visualization
+Data visualization is the graphical representation of information and/or data. The integration of visual elements into you data analysis is crucial for not only your understanding, but also your audience's understanding of patterns in the data. Data visualization also provides easier interpretation and highlights outliers or abnormalities in the data. 
+
+Prior to beginning our data visualization, we must form a hypothesis. Do we think that the treatment type (chilled or non chilled conditions) will have a significant impact on CO2 uptake? Do we think that the type of plant (Quebec or Mississippi variant) will have a significant impact on CO2 uptake? Here is a hypothesis we can use for this tutorial
+
+We hypothesize that the plant variant from Quebec will have a statistically significant difference in CO2 uptake from the Mississippi variant and that there will be higher CO2 uptake in the Quebec variant. 
+
+Now you try! State a hypothesis about the levels of CO2 uptake dependent on the treatment of plants. 
+
+##Histogram
+We can use a histogram to understand and determine the distribution of the data. Let's start by analyzing the CO2 uptake depending on the type of plants (Quebec and Mississippi variants)
+
+
+```{r}
+ggplot(CO2) +
+  aes(x = uptake, fill = Type) +
+  geom_histogram(bins=100) +
+  theme_cowplot()
+```
+##Practice Histogram
+Now you can try to use this code to create a histogram comparing CO2 uptake in different treatment types (chilled and non-chilled treatments)
+
+```{r}
+
+```
+Because we are comparing numerical and categorical variables, it would be favorable to use a boxplot or a bar chart to visualize the data. If we were comparing numerical varibles to other numerical variables, it would be more favorable to use a scatterplot or line plot. Let's start off by plotting the uptake based on the type of plant using a scatterplot. 
+
+```{r}
+ggplot(CO2, aes(x = uptake, y = Type, color = Type)) +
+    geom_boxplot() + geom_jitter() +theme_cowplot()
+
+```
+Based on this graph, it appears that the Quebec variant has a higher mean, median, Q1 and Q3. However, we cannot deduce this just by looking at the graph, we must complete more statistical testing.
+
+###Practice
+Now you can try to create a scatterplot of CO2 uptake based on treatment administered!
+```{r}
+
+
+```
+For the sake of the tutorial, lets create a bar chart of the same variables in the boxplot, just to compare the two. 
+
+```{r}
+ggplot(CO2, aes(x = Type, y=uptake), fill = Type) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
+
+```
+The bar chart yields the (seemingly) same results as the boxplot. This time, we used the xlab and ylab codes to add specific axis labels. 
+
+###Practice
+
+Try to make a bar plot of uptake vs treatment!
+```{r}
+
+```
+
+
+We can now analyze the relationship between uptake and type of plant using linear models. We must first convert out categorical variable (type) to a factor so that it will be recognized in the linear model
+
+```{r}
+CO2$Type <- as.factor(CO2$Type)
+
+lmType <- lm(uptake ~ Type, data = CO2)
+summary(lmType)
+```
+This linear model displays that there is a statistically significant difference between the uptakes of the Quebec and Mississippi variants because we observe a p-value of 3.83 x 10^-9 (lower than .05). We can see at the estimate tab that TypeMississippi has a value of -12.660. This means that for every unit of CO2 uptake observed in the Quebec variant, the Mississippi variant is 12.660 units lower. Therefore, our hypothesis regarding the value of the Quebec variant versus the Mississippi variant is supported. 
+
+Now try this with the uptake vs treatment! Remember to convert treatment to a factor!!
+
+What was your p-value?
+
+What does your p- value say about the statistical significance of our findings?
+
+Was your hypothesis proven or disproven?
+
+
 
 
 
