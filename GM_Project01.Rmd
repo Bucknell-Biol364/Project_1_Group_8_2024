@@ -14,121 +14,84 @@ if (!require("tidyverse")) install.packages("tidyverse"); library(tidyverse)
 
 This project will require you to develop a tutorial to teach Bucknell students how to use R for graphing and data analysis. 
 
-## Introduction
 
-Begin by introducing yourself to your group. 
-Then discuss the biggest challenge that you have faced during the first three weeks of this course.
-Determine if there are any common threads in these challenges and start to think about objectives for the tutorial.
-
-## Target Audience
-
-Discuss with your group the target audience for the tutorial. 
-Examples could be a new student in Biology 364/664, a student in one of the new core Biology classes (201, 202, 203, or 204), a student in another 300-level Biology course (not 364), or a new student in one of the Bucknell research groups. 
-
-Edit the README.md file in your group's repository to reflect your plan.
 
 ## Objectives
 
-After deciding on the target audience for your tutorial determine 2 to 3 overall objectives for your tutorial (one per member of your group). 
-These should be high-level objectives that are important skills for your target audience.
-Check with Prof. Field to see if they are appropriate and then add them to your README.md file.
+2. By the end of this tutorial, students should be able to confidently construct different graphs, including but not limited to, scatterplots, bar charts, box and whisker, histograms, QQ plots, etc. Students will have clear interpretations of these graphs and how they represent relationships in the data.
 
-Identify at least 2 goals within each objective and add them to your README.md file.
-These should be goals that someone who is working through the tutorial can self-asses.
-For example, "to demostrate that you can test a hypothesis using a statistical model, the student should use a T test, linear model, or other test and interpret the p value appropriately."
+2.1 Data Visualization: Students will be able to generate visualizations of data using the ggplot function and choose the appropriate graph according to relationships between variables, types of variables in the dataset, and your hypothesis.
 
-## Grading
+2.2 Graphical Analysis: Students will be able to effectively analyze these graphs and have the tools to understand what the visuals mean in terms of their hypothesis and/or question. Students will maintain clarity in explaining what these graphs do, what our objective is in making these graphs, and how this brings us closer to our final goal.
 
-Each group will be expected to complete the following tasks to earn 85% of the points available for this assignment (21/25).
 
-- Identify and obtain suitable dataset
-- Use a Github repository and version control to collaborate on the project
-  + Every member of the group should participate in editing the repo
-- Spend 4-6 hours preparing, coding, and testing tutorial
-  + Data exploration
-  + Data visualization
-  + Hypothesis testing
-- Present tutorial in class
-- Provide public archive suitable for sharing to students/faculty
+#Data Visualization
+Data visualization is the graphical representation of information and/or data. The integration of visual elements into you data analysis is crucial for not only your understanding, but also your audience's understanding of patterns in the data. Data visualization also provides easier interpretation and highlights outliers or abnormalities in the data. 
 
-Tutorials from previous classes can be viewed at our public github site: https://github.com/Bucknell-Biol364
+Prior to beginning our data visualization, we must form a hypothesis. Do we think that the treatment type (chilled or non chilled conditions) will have a significant impact on CO2 uptake? Do we think that the type of plant (Quebec or Mississippi variant) will have a significant impact on CO2 uptake? Here is a hypothesis we can use for this tutorial
 
-Each group should use an *Acknowledgements* section to document the participation of each member and the collaboration within and between groups.
+We hypothesize that the plant variant from Quebec will have a statistically significant difference in CO2 uptake from the Mississippi variant and that there will be higher CO2 uptake in the Quebec variant. 
 
-Additional credit will be awarded for providing assistance to other groups or for the development of a tutorial that goes beyond the minimal expectations listed above.
-You will have the opportunity to provide feedback to another group after the initial deadline (like for Homework 02).
+Now you try! State a hypothesis about the levels of CO2 uptake dependent on the treatment of plants. 
 
-## Sample Dataset
+##Histogram
+We can use a histogram to understand and determine the distribution of the data. Let's start by analyzing the CO2 uptake depending on the type of plants (Quebec and Mississippi variants)
 
-One of the possible datasets to use for the tutorial can be found in the datasauRus package.
 
 ```{r}
-datasaurus_dozen |> 
-  group_by(dataset) |> 
-  summarize(
-      mean_x    = mean(x),
-      mean_y    = mean(y),
-      std_dev_x = sd(x),
-      std_dev_y = sd(y),
-      corr_x_y  = cor(x, y)
-      )
+ggplot(CO2) +
+  aes(x = uptake, fill = Type) +
+  geom_histogram(bins=100) +
+  theme_cowplot()
 ```
-
-Compare the means and standard deviations of the 13 different datasets.
-
-
-Boxplots of either the x or the y value show that there are some differences, even though the means and standard deviations are identical.
+##Practice Histogram
+Now you can try to use this code to create a histogram comparing CO2 uptake in different treatment types (chilled and non-chilled treatments)
 
 ```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = x, colour = dataset)) +
-    geom_boxplot() +
-    theme_void() +
-    theme(legend.position = "none") +
-    facet_wrap(~dataset, ncol = 3)
+
 ```
+Because we are comparing numerical and categorical variables, it would be favorable to use a boxplot or a bar chart to visualize the data. If we were comparing numerical varibles to other numerical variables, it would be more favorable to use a scatterplot or line plot. Let's start off by plotting the uptake based on the type of plant using a scatterplot. 
 
 ```{r}
-datasaurus_dozen |>
-  ggplot(aes(x = y, colour = dataset))+
-    geom_boxplot()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
+ggplot(CO2, aes(x = uptake, y = Type, color = Type)) +
+    geom_boxplot() + geom_jitter() +theme_cowplot()
+
 ```
+Based on this graph, it appears that the Quebec variant has a higher mean, median, Q1 and Q3. However, we cannot deduce this just by looking at the graph, we must complete more statistical testing.
 
-But you have to visualize all of the data with a scatter plot to really see the patterns.
+Now you can try to create a scatterplot of CO2 uptake based on treatment administered!
+```{r}
 
-```{r fig.height=12, fig.width=9}
-datasaurus_dozen |> 
-  ggplot(aes(x = x, y = y, colour = dataset))+
-    geom_point()+
-    theme_void()+
-    theme(legend.position = "none")+
-    facet_wrap(~dataset, ncol = 3)
+
 ```
-
-And did you notice the code in the {r} codechunk header that controlled the size of the output in the Rmd? Pretty neat trick!
-
-And here are two versions of the data that you could use in your data visualization tutorial. 
-To use them you would probably want to change the names of the datasets and also make x and y more meaningful. 
-Then save them as a csv or tsv to be imported later for your tutorial. 
+For the sake of the tutorial, lets create a bar chart of the same variables in the boxplot, just to compare the two. 
 
 ```{r}
-datasaurus_long <- datasaurus_dozen
-datasaurus_wide <- datasaurus_dozen_wide
-head(datasaurus_long)
-head(datasaurus_wide)
+ggplot(CO2, aes(x = Type, y=uptake), fill = Type) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
+
+```
+The bar chart yields the (seemingly) same results as the boxplot. This time, we used the xlab and ylab codes to add specific axis labels. 
+
+Try to make a bar plot of uptake vs treatment!
+```{r}
+
 ```
 
-# Acknowledgements
 
-DatasauRus package and description below: Stephanie Locke https://github.com/jumpingrivers/datasauRus
+We can now analyze the relationship between uptake and type of plant using linear models. We must first convert out categorical variable (type) to a factor so that it will be recognized in the linear model
 
-The datasauRus package wraps the awesome Datasaurus Dozen dataset, which contains 13 sets of x-y data. Each sub-dataset has five statistics that are (almost) the same in each case. (These are the mean of x, mean of y, standard deviation of x, standard deviation of y, and Pearson correlation between x and y). However, scatter plots reveal that each sub-dataset looks very different. The dataset is intended to be used to teach students that it is important to plot their own datasets, rather than relying only on statistics.
+```{r}
+CO2$Type <- as.factor(CO2$Type)
 
-The Datasaurus was created by Alberto Cairo and described in the paper [Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing](https://www.autodeskresearch.com/publications/samestats) by Justin Matejka and George Fitzmaurice.
+lmType <- lm(uptake ~ Type, data = CO2)
+summary(lmType)
+```
+This linear model displays that there is a statistically significant difference between the uptakes of the Quebec and Mississippi variants because we observe a p-value of 3.83 x 10^-9 (lower than .05). We can see at the estimate tab that TypeMississippi has a value of -12.660. This means that for every unit of CO2 uptake observed in the Quebec variant, the Mississippi variant is 12.660 units lower. Therefore, our hypothesis regarding the value of the Quebec variant versus the Mississippi variant is supported. 
 
-In the paper, Justin and George simulate a variety of datasets that the same summary statistics to the Datasaurus but have very different distributions. 
+Now try this with the uptake vs treatment! Remember to convert treatment to a factor!!
 
-This package also makes these datasets available for use as an advanced [Anscombe's Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet), available in R as `anscombe`.
+What was your p-value?
+
+What does your p- value say about the statistical significance of our findings?
+
+Was your hypothesis proven or disproven?
