@@ -173,7 +173,9 @@ Now you try! State a hypothesis about the levels of CO2 uptake dependent on the 
 
 ## Graphs
 ### Example: Histogram
-We can use a histogram to understand and determine the distribution of the data. Let's start by analyzing the CO2 uptake depending on the type of plants (Quebec and Mississippi variants)
+We can use a histogram to understand and determine the distribution of the data. We are looking for a normal distribution, meaning that the data follows a bell shaped curve. The peak of the data is where we can find the mean value, where most individuals/datapoints can be found. A normal distribution is symmetrical with each end of the curve tapering off evenly. A non-normal distribution is anything that does not fall under the description of bell shaped (ie skewed, containing multiple peaks-"bumpy" looking, or uniform- with everything spread out evenly).
+
+Let's start by analyzing the CO2 uptake depending on the type of plants (Quebec and Mississippi variants)
 
 
 ```{r}
@@ -188,6 +190,10 @@ Now you can try to use this code to create a histogram comparing CO2 uptake in d
 ```{r}
 
 ```
+Use the next few lines below to analyze the histogram. What do you notice about the distribution? Is it normally distributed (with the largest values on the y axis concentrated in the middle of the histogram)? If so, this is a good sign for statistical testing and data visualization moving forward. 
+
+
+
 Because we are comparing numerical and categorical variables, it would be favorable to use a boxplot or a bar chart to visualize the data. If we were comparing numerical varibles to other numerical variables, it would be more favorable to use a scatterplot or line plot. Let's start off by plotting the uptake based on the type of plant using a scatterplot. 
 
 ### Example: Boxplot
@@ -214,6 +220,10 @@ For the sake of the tutorial, lets create a bar chart of the same variables in t
 ggplot(CO2, aes(x = Type, y=uptake), fill = Type) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
 
 ```
+Use the next few lines below to analyze the boxplot and bar chart.How does this graph impact your initial view of the data and/or your hypothesis? How does this correlate with the statistical test findings?
+
+
+
 The bar chart yields the (seemingly) same results as the boxplot. This time, we used the xlab and ylab codes to add specific axis labels. 
 
 ### Practice: Bar Chart 
