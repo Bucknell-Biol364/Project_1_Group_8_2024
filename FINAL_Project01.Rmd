@@ -271,5 +271,33 @@ Now, you should be proficient in creating summary statistics, running statistica
 
 
 
+#Practice Keys 
+
+##Histogram Key
+```{r}
+ggplot(CO2) +
+  aes(x = uptake, fill = Treatment) +
+  geom_histogram(bins=100) +
+  theme_cowplot()
+```
+##Boxplot Key
+```{r}
+ggplot(CO2, aes(x = uptake, y = Treatment, color = Treatment)) +
+    geom_boxplot() + geom_jitter() +theme_cowplot()
+```
+##Bar Chart Key
+```{r}
+ggplot(CO2, aes(x = Treatment, y=uptake), fill = Treatment) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
+
+```
+##Linear Model Key
+```{r}
+CO2$Treatment <- as.factor(CO2$Treatment)
+
+lmTreatment <- lm(uptake ~ Treatment, data = CO2)
+summary(lmTreatment)
+```
+
+
 
 
