@@ -37,6 +37,7 @@ We are going to learn how to calculate each statistic individually, and then we 
 
 ### Example
 The statistics we are most interested in are min, max, mean, median, and standard deviation. 
+Note: The na.rm argument is a simple way of removing missing values from data if they are coded as NA
 
 We will begin by calculating these statistics for overall uptake. 
 ```{r}
@@ -49,6 +50,23 @@ sd(CO2$uptake,na.rm=TRUE)
 
 ```
 There is an easier way to group these statistics together that allows us to look at the statistics for type and treatment individually! This requires us using a function called group_by.
+
+This is a little bit more of an advanced code, so we will walk you through the code first! 
+1) summary_stats_type<- 
+This is where the results of the summary statistics will be stored-- you create the name. The arrow assigns the results to the name. 
+2) CO2 |>
+CO2 is the data-set we are using-- we are telling R to use this data for this line of code. The pipe operator (|>) is just a way to make the code easier to read by chaining multiple operations together in a concise way.   
+3) group_by(Type)
+This tells R to group the CO2 data by the Type column 
+4)  summarise(count_uptake=n(),
+            min_uptake=min(uptake), 
+            max_uptake=max(uptake),
+            mean_uptake=mean(uptake),
+            median_uptake=median(uptake), 
+            sd_uptake=sd(uptake))
+We are summarizing the different statistics into a new data frame
+5) print(summary_stats_type)
+This prints out summary statistics to the screen, showing the new data frame. 
 
 We will now calculate the summary statistics grouped by type. 
 ```{r}
@@ -98,6 +116,7 @@ Independent Variable:
 ```{r}
 # perform a two-sample t-test here 
 ```
+
 What was the p-value?
 
 What does this tell us about the relationship between CO2 uptake and treatment? 
@@ -130,6 +149,7 @@ Independent Variable:
 ```{r}
 # perform one-way ANOVA here!
 ```
+
 What was the p-value?
 
 What does this tell us about the relationship between CO2 uptake and treatment? 
@@ -149,8 +169,7 @@ Independent 1:
 Independent 2:
 *note that independent variables 1 and 2 can be interchangeable! 
 ```{r}
-try<-aov(uptake ~ Treatment * Type, data= CO2)
-summary(try)
+# perform a two-way ANOVA here!
 ```
 What was the p-value for treatment? 
 
@@ -271,26 +290,51 @@ Now, you should be proficient in creating summary statistics, running statistica
 
 
 
-#Practice Keys 
-
-##Histogram Key
+# Practice Keys 
+## Summary Statistic Key
+```{r}
+summary_stats_treatment<- CO2 |>
+  group_by(Treatment) |>
+  summarise(count_uptake=n(),
+            min_uptake=min(uptake), 
+            max_uptake=max(uptake),
+            mean_uptake=mean(uptake),
+            median_uptake=median(uptake), 
+            sd_uptake=sd(uptake))
+print(summary_stats_treatment)
+```
+## T-Test Key
+```{r}
+t.test(uptake~Treatment, data=CO2)
+```
+## One Way ANOVA Key
+```{r}
+treatment_anova<-aov(uptake~Treatment, data=CO2)
+summary(treatment_anova)
+```
+## Two Way ANOVA Key
+```{r}
+treatment_type_anova<-aov(uptake ~ Treatment * Type, data=CO2)
+summary(treatment_type_anova)
+```
+## Histogram Key
 ```{r}
 ggplot(CO2) +
   aes(x = uptake, fill = Treatment) +
   geom_histogram(bins=100) +
   theme_cowplot()
 ```
-##Boxplot Key
+## Boxplot Key
 ```{r}
 ggplot(CO2, aes(x = uptake, y = Treatment, color = Treatment)) +
     geom_boxplot() + geom_jitter() +theme_cowplot()
 ```
-##Bar Chart Key
+## Bar Chart Key
 ```{r}
 ggplot(CO2, aes(x = Treatment, y=uptake), fill = Treatment) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
 
 ```
-##Linear Model Key
+## Linear Model Key
 ```{r}
 CO2$Treatment <- as.factor(CO2$Treatment)
 
