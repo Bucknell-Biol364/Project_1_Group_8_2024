@@ -53,7 +53,8 @@ then we will learn how to group the statistics together.
 ### Example
 
 The statistics we are most interested in are min, max, mean, median, and
-standard deviation.
+standard deviation. Note: The na.rm argument is a simple way of removing
+missing values from data if they are coded as NA
 
 We will begin by calculating these statistics for overall uptake.
 
@@ -91,6 +92,21 @@ sd(CO2$uptake,na.rm=TRUE)
 There is an easier way to group these statistics together that allows us
 to look at the statistics for type and treatment individually! This
 requires us using a function called group_by.
+
+This is a little bit more of an advanced code, so we will walk you
+through the code first! 1) summary_stats_type\<- This is where the
+results of the summary statistics will be stored– you create the name.
+The arrow assigns the results to the name. 2) CO2 \|\> CO2 is the
+data-set we are using– we are telling R to use this data for this line
+of code. The pipe operator (\|\>) is just a way to make the code easier
+to read by chaining multiple operations together in a concise way.  
+3) group_by(Type) This tells R to group the CO2 data by the Type column
+4) summarise(count_uptake=n(), min_uptake=min(uptake),
+max_uptake=max(uptake), mean_uptake=mean(uptake),
+median_uptake=median(uptake), sd_uptake=sd(uptake)) We are summarizing
+the different statistics into a new data frame 5)
+print(summary_stats_type) This prints out summary statistics to the
+screen, showing the new data frame.
 
 We will now calculate the summary statistics grouped by type.
 
@@ -260,17 +276,8 @@ variables? Dependent: Independent 1: Independent 2: \*note that
 independent variables 1 and 2 can be interchangeable!
 
 ``` r
-try<-aov(uptake ~ Treatment * Type, data= CO2)
-summary(try)
+# perform a two-way ANOVA here!
 ```
-
-    ##                Df Sum Sq Mean Sq F value   Pr(>F)    
-    ## Treatment       1    988     988  15.416 0.000182 ***
-    ## Type            1   3366    3366  52.509 2.38e-10 ***
-    ## Treatment:Type  1    226     226   3.522 0.064213 .  
-    ## Residuals      80   5128      64                     
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 What was the p-value for treatment?
 
@@ -308,8 +315,16 @@ on the treatment of plants.
 ### Example: Histogram
 
 We can use a histogram to understand and determine the distribution of
-the data. Let’s start by analyzing the CO2 uptake depending on the type
-of plants (Quebec and Mississippi variants)
+the data. We are looking for a normal distribution, meaning that the
+data follows a bell shaped curve. The peak of the data is where we can
+find the mean value, where most individuals/datapoints can be found. A
+normal distribution is symmetrical with each end of the curve tapering
+off evenly. A non-normal distribution is anything that does not fall
+under the description of bell shaped (ie skewed, containing multiple
+peaks-“bumpy” looking, or uniform- with everything spread out evenly).
+
+Let’s start by analyzing the CO2 uptake depending on the type of plants
+(Quebec and Mississippi variants)
 
 ``` r
 ggplot(CO2) +
@@ -322,6 +337,12 @@ ggplot(CO2) +
 Practice: Histogram Now you can try to use this code to create a
 histogram comparing CO2 uptake in different treatment types (chilled and
 non-chilled treatments)
+
+Use the next few lines below to analyze the histogram. What do you
+notice about the distribution? Is it normally distributed (with the
+largest values on the y axis concentrated in the middle of the
+histogram)? If so, this is a good sign for statistical testing and data
+visualization moving forward.
 
 Because we are comparing numerical and categorical variables, it would
 be favorable to use a boxplot or a bar chart to visualize the data. If
@@ -363,9 +384,13 @@ ggplot(CO2, aes(x = Type, y=uptake), fill = Type) + geom_bar(stat = "summary", p
 
     ## No summary function supplied, defaulting to `mean_se()`
 
-![](FINAL_Project01_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> The
-bar chart yields the (seemingly) same results as the boxplot. This time,
-we used the xlab and ylab codes to add specific axis labels.
+![](FINAL_Project01_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> Use
+the next few lines below to analyze the boxplot and bar chart.How does
+this graph impact your initial view of the data and/or your hypothesis?
+How does this correlate with the statistical test findings?
+
+The bar chart yields the (seemingly) same results as the boxplot. This
+time, we used the xlab and ylab codes to add specific axis labels.
 
 ### Practice: Bar Chart
 
@@ -442,3 +467,127 @@ Was your hypothesis proven or disproven?
 
 Now, you should be proficient in creating summary statistics, running
 statistical tests, visualizing data, and graphical analyses!
+
+# Practice Keys
+
+## Summary Statistic Key
+
+``` r
+summary_stats_treatment<- CO2 |>
+  group_by(Treatment) |>
+  summarise(count_uptake=n(),
+            min_uptake=min(uptake), 
+            max_uptake=max(uptake),
+            mean_uptake=mean(uptake),
+            median_uptake=median(uptake), 
+            sd_uptake=sd(uptake))
+print(summary_stats_treatment)
+```
+
+    ## # A tibble: 2 × 7
+    ##   Treatment  count_uptake min_uptake max_uptake mean_uptake median_uptake
+    ##   <fct>             <int>      <dbl>      <dbl>       <dbl>         <dbl>
+    ## 1 nonchilled           42       10.6       45.5        30.6          31.3
+    ## 2 chilled              42        7.7       42.4        23.8          19.7
+    ## # ℹ 1 more variable: sd_uptake <dbl>
+
+## T-Test Key
+
+``` r
+t.test(uptake~Treatment, data=CO2)
+```
+
+    ## 
+    ##  Welch Two Sample t-test
+    ## 
+    ## data:  uptake by Treatment
+    ## t = 3.0485, df = 80.945, p-value = 0.003107
+    ## alternative hypothesis: true difference in means between group nonchilled and group chilled is not equal to 0
+    ## 95 percent confidence interval:
+    ##   2.382366 11.336682
+    ## sample estimates:
+    ## mean in group nonchilled    mean in group chilled 
+    ##                 30.64286                 23.78333
+
+## One Way ANOVA Key
+
+``` r
+treatment_anova<-aov(uptake~Treatment, data=CO2)
+summary(treatment_anova)
+```
+
+    ##             Df Sum Sq Mean Sq F value Pr(>F)   
+    ## Treatment    1    988   988.1   9.293 0.0031 **
+    ## Residuals   82   8719   106.3                  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+## Two Way ANOVA Key
+
+``` r
+treatment_type_anova<-aov(uptake ~ Treatment * Type, data=CO2)
+summary(treatment_type_anova)
+```
+
+    ##                Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## Treatment       1    988     988  15.416 0.000182 ***
+    ## Type            1   3366    3366  52.509 2.38e-10 ***
+    ## Treatment:Type  1    226     226   3.522 0.064213 .  
+    ## Residuals      80   5128      64                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+## Histogram Key
+
+``` r
+ggplot(CO2) +
+  aes(x = uptake, fill = Treatment) +
+  geom_histogram(bins=100) +
+  theme_cowplot()
+```
+
+![](FINAL_Project01_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> \##
+Boxplot Key
+
+``` r
+ggplot(CO2, aes(x = uptake, y = Treatment, color = Treatment)) +
+    geom_boxplot() + geom_jitter() +theme_cowplot()
+```
+
+![](FINAL_Project01_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> \##
+Bar Chart Key
+
+``` r
+ggplot(CO2, aes(x = Treatment, y=uptake), fill = Treatment) + geom_bar(stat = "summary", position = "dodge", color = "black")+ theme_cowplot() + scale_fill_grey()+ xlab("Type of Plant") + ylab("CO2 Uptake")
+```
+
+    ## No summary function supplied, defaulting to `mean_se()`
+
+![](FINAL_Project01_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> \##
+Linear Model Key
+
+``` r
+CO2$Treatment <- as.factor(CO2$Treatment)
+
+lmTreatment <- lm(uptake ~ Treatment, data = CO2)
+summary(lmTreatment)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = uptake ~ Treatment, data = CO2)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -20.0429  -8.6530  -0.4429   9.7321  18.6167 
+    ## 
+    ## Coefficients:
+    ##                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)        30.643      1.591  19.259   <2e-16 ***
+    ## Treatmentchilled   -6.860      2.250  -3.048   0.0031 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 10.31 on 82 degrees of freedom
+    ## Multiple R-squared:  0.1018, Adjusted R-squared:  0.09084 
+    ## F-statistic: 9.293 on 1 and 82 DF,  p-value: 0.003096
